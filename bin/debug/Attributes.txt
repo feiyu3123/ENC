@@ -1,0 +1,196 @@
+#S57-Appendix A,Charpter 2
+Agency responsible for production AGENCY 1 2.4
+Beacon shape BCNSHP 2 2.5
+Building shape BUISHP 3 2.6
+Buoy shape BOYSHP 4 2.7
+Buried depth BURDEP 5 2.8
+Call sign CALSGN 6 2.9
+Category of airport/airfield CATAIR 7 2.10
+Category of anchorage CATACH 8 2.11
+Category of bridge CATBRG 9 2.12
+Category of built-up area CATBUA 10 2.15
+Category of cable CATCBL 11 2.16
+Category of canal CATCAN 12 2.17
+Category of cardinal mark CATCAM 13 2.18
+Category of checkpoint CATCHP 14 2.19
+Category of coastline CATCOA 15 2.20
+Category of control point CATCTR 16 2.22
+Category of conveyor CATCON 17 2.23
+Category of coverage CATCOV 18 2.24
+Category of crane CATCRN 19 2.25
+Category of dam CATDAM 20 2.26
+Category of distance mark CATDIS 21 2.27
+Category of dock CATDOC 22 2.28
+Category of dumping ground CATDPG 23 2.29
+Category of fenceline CATFNC 24 2.31
+Category of ferry CATFRY 25 2.32
+Category of fishing facility CATFIF 26 2.33
+Category of fog signal CATFOG 27 2.34
+Category of fortified structure CATFOR 28 2.36
+Category of gate CATGAT 29 2.40
+Category of ice CATICE 32 2.41
+Category of installation buoy CATINB 33 2.42
+Category of land region CATLND 34 2.43
+Category of landmark CATLMK 35 2.45
+Category of lateral mark CATLAM 36 2.47
+Category of light CATLIT 37 2.48
+Category of marine farm/culture CATMFA 38 2.50
+Category of military practice area CATMPA 39 2.52
+Category of mooring/warping facility CATMOR 40 2.55
+Category of obstruction CATOBS 42 2.56
+Category of offshore platform CATOFP 43 2.58
+Category of oil barrier CATOLB 44 2.60
+Category of pile CATPLE 45 2.61
+Category of pilot boarding place CATPIL 46 2.62
+Category of pipeline/pipe CATPIP 47 2.63
+Category of production area CATPRA 48 2.654
+Category of pylon CATPYL 49 2.66
+Category of quality of data CATQUA 50 2.67
+Category of radar station CATRAS 51 2.68
+Category of radar transponder beacon CATRTB 52 2.69
+Category of radio station CATROS 53 2.70
+Category of recommended track CATTRK 54 2.72
+Category of rescue station CATRSC 55 2.74
+Category of restricted area CATREA 56 2.75
+Category of road CATROD 57 2.77
+Category of runway CATRUN 58 2.78
+Category of sea area CATSEA 59 2.79
+Category of shoreline construction CATSLC 60 2.84
+Category of signal station, traffic CATSIT 61 2.86
+Category of signal station, warning CATSIW 62 2.87
+Category of silo/tank CATSIL 63 2.89
+Category of slope CATSLO 64 2.90
+Category of small craft facility CATSCF 65 2.91
+Category of special purpose mark CATSPM 66 2.93
+Category of Tidal Stream CAT_TS 188 2.97
+Category of Traffic Separation Scheme CATTSS 67 2.99
+Category of vegetation CATVEG 68 2.101
+Category of water turbulence CATWAT 69 2.103
+Category of weed/kelp CATWED 70 2.104
+Category of wreck CATWRK 71 2.105
+Character spacing $SPACE 73 2.109
+Character specification $CHARS 74 2.110
+Colour COLOUR 75 2.111
+Colour pattern COLPAT 76 2.113
+Communication channel COMCHA 77 2.114
+Compass size $CSIZE 78 2.115
+Compilation date CPDATE 79 2.116
+Compilation scale CSCALE 80 2.117
+Condition CONDTN 81 2.118
+Conspicuous, radar CONRAD 82 2.119
+Conspicuous, visually CONVIS 83 2.120
+Current velocity CURVEL 84 2.121
+Date end DATEND 85 2.122
+Date start DATSTA 86 2.123
+Depth range value 1 DRVAL1 87 2.124
+Depth range value 2 DRVAL2 88 2.125
+Depth units DUNITS 89 2.126
+Elevation ELEVAT 90 2.127
+Estimated range of transmission ESTRNG 91 2.129
+Exposition of sounding EXPSOU 93 2.130
+Function FUNCTN 94 2.131
+Height HEIGHT 95 2.134
+Height/length units HUNITS 96 2.135
+Horizontal accuracy HORACC 97 2.136
+Horizontal clearance HORCLR 98 2.137
+Horizontal length HORLEN 99 2.138
+Horizontal width HORWID 100 2.139
+Ice factor ICEFAC 101 2.140
+Information INFORM 102 2.141
+Jurisdiction JRSDTN 103 2.142
+Justification - horizontal $JUSTH 104 2.143
+Justification - vertical $JUSTV 105 2.144
+Lifting capacity LIFCAP 106 2.145
+Light characteristic LITCHR 107 2.146
+Light visibility LITVIS 108 2.148
+Marks navigational - System of MARSYS 109 2.149
+Multiplicity of lights MLTYLT 110 2.150
+Nationality NATION 111 2.151
+Nature of construction NATCON 112 2.152
+Nature of surface NATSUR 113 2.153
+Nature of surface - qualifying terms NATQUA 114 2.155
+Notice to Mariners date NMDATE 115 2.157
+Object name OBJNAM 116 2.158
+Orientation ORIENT 117 2.159
+Periodic date end PEREND 118 2.160
+Periodic date start PERSTA 119 2.161
+Pictorial representation PICREP 120 2.162
+Pilot district PILDST 121 2.163
+Positional accuracy units PUNITS 189 2.165
+Producing country PRCTRY 122 2.165
+Product PRODCT 123 2.166
+Publication reference PUBREF 124 2.168
+Quality of sounding measurement QUASOU 125 2.169
+Radar wave length RADWAL 126 2.172
+Radius RADIUS 127 2.173
+Recording date RECDAT 128 2.174
+Recording indication RECIND 129 2.175
+Reference year for magnetic variation RYRMGV 130 2.176
+Restriction RESTRN 131 2.177
+Scale maximum SCAMAX 132 2.180
+Scale minimum SCAMIN 133 2.181
+Scale value one SCVAL1 134 2.182
+Scale value two SCVAL2 135 2.183
+Sector limit one SECTR1 136 2.184
+Sector limit two SECTR2 137 2.185
+Shift parameters SHIPAM 138 2.186
+Signal frequency SIGFRQ 139 2.187
+Signal generation SIGGEN 140 2.188
+Signal group SIGGRP 141 2.189
+Signal period SIGPER 142 2.190
+Signal sequence SIGSEQ 143 2.191
+Sounding accuracy SOUACC 144 2.192
+Sounding distance - maximum SDISMX 145 2.193
+Sounding distance - minimum SDISMN 146 2.194
+Source date SORDAT 147 2.195
+Source indication SORIND 148 2.196
+Status STATUS 149 2.197
+Survey date - end SUREND 151 2.201
+Survey date - start SURSTA 152 2.202
+Survey type SURTYP 153 2.203
+Symbol scaling factor $SCALE 154 2.204
+Symbolization code $SCODE 155 2.205
+Technique of sounding measurement TECSOU 156 2.206
+Text string $TXSTR 157 2.208
+Textual description TXTDSC 158 2.209
+Tidal stream - panel values TS_TSP 159 2.210
+Tidal stream - time series values TS_TSV 160 2.211
+Tide - accuracy of water level T_ACWL 161 2.212
+Tide - high and low water values T_HWLW 162 2.213
+Tide - method of tidal prediction T_MTOD 163 2.214
+Tide - time and height differences T_THDF 164 2.215
+Tide - time series values T_TSVL 166 2.216
+Tide - value of harmonic constituents T_VAHC 167 2.217
+Tide - time interval of values T_TINT 165 2.218
+Time end TIMEND 168 2.219
+Time start TIMSTA 169 2.220
+Tint $TINTS 170 2.221
+Topmark/daymark shape TOPSHP 171 2.222
+Traffic flow TRAFIC 172 2.225
+Value of annual change in magnetic variation VALACM 173 2.226
+Value of depth contour VALDCO 174 2.227
+Value of local magnetic anomaly VALLMA 175 2.228
+Value of magnetic variation VALMAG 176 2.229
+Value of maximum range VALMXR 177 2.230
+Value of nominal range VALNMR 178 2.231
+Value of sounding VALSOU 179 2.232
+Vertical accuracy VERACC 180 2.233
+Vertical clearance VERCLR 181 2.234
+Vertical clearance, closed VERCCL 182 2.235
+Vertical clearance, open VERCOP 183 2.236
+Vertical clearance, safe VERCSA 184 2.237
+Vertical datum VERDAT 185 2.238
+Vertical length VERLEN 186 2.242
+Water level effect WATLEV 187 2.243
+
+#National Language Attributes 2.245
+Information in national language NINFOM 300 2.246
+Object name in national language NOBJNM 301 2.247
+Pilot district in national language NPLDST 302 2.248
+Text string in national language $NTXST 303 2.249
+Textual description in national language NTXTDS 304 2.250
+
+#Spatial and Meta Object Attributes 2.251
+Horizontal datum HORDAT 400 2.252
+Positional Accuracy POSACC 401 2.255
+Quality of position QUAPOS 402 2.256

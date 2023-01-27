@@ -1,0 +1,12 @@
+#ifndef S57SERIALIZE_GLOBAL_H
+#define S57SERIALIZE_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(S57DATASET_LIBRARY)
+#  define S57DATASET_EXPORT Q_DECL_EXPORT
+#else
+#  define S57DATASET_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // S57SERIALIZE_GLOBAL_H

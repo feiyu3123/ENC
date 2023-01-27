@@ -1,0 +1,187 @@
+#
+#S-57 Appendix A
+#1.2 Geo Object Classes
+Administration Area (Named) ADMARE 1 1.3
+Airport/airfield AIRARE 2 1.4
+Anchor berth ACHBRT 3 1.6
+Anchorage area ACHARE 4 1.7
+Beacon cardinal BCNCAR 5 1.8
+Beacon isolated danger BCNISD 6 1.9
+Beacon lateral BCNLAT 7 1.10
+Beacon safe water BCNSAW 8 1.11
+Beacon special purpose/general BCNSPP 9 1.12
+Berth BERTHS 10 1.13
+Bridge BRIDGE 11 1.15
+Building single BUISGL 12 1.17
+Built-up area BUAARE 13 1.18
+Buoy cardinal BOYCAR 14 1.19
+Buoy installation BOYINB 15 1.20
+Buoy isolated danger BOYISD 16 1.21
+Buoy lateral BOYLAT 17 1.22
+Buoy safe water BOYSAW 18 1.23
+Buoy special purpose/general BOYSPP 19 1.24
+Cable area CBLARE 20 1.25
+Cable overhead CBLOHD 21 1.26
+Cable submarine CBLSUB 22 1.27
+Canal CANALS 23 1.29
+Canal bank CANBNK 24 1.30
+Cargo transhipment area CTSARE 25 1.31
+Causeway CAUSWY 26 1.32
+Caution area CTNARE 27 1.33
+Checkpoint CHKPNT 28 1.36
+Coastguard station CGUSTA 29 1.38
+Coastline COALNE 30 1.39
+Contiguous zone CONZNE 31 1.40
+Continental shelf area COSARE 32 1.41
+Control point CTRPNT 33 1.42
+Conveyor CONVYR 34 1.43
+Crane CRANES 35 1.44
+Current - non-gravitational CURENT 36 1.45
+Custom zone CUSZNE 37 1.46
+Dam DAMCON 38 1.47
+Daymark DAYMAR 39 1.48
+Deep water route centerline DWRTCL 40 1.49
+Deep water route part DWRTPT 41 1.50
+Depth area DEPARE 42 1.51
+Depth contour DEPCNT 43 1.52
+Distance mark DISMAR 44 1.55
+Dock area DOCARE 45 1.56
+Dredged area DRGARE 46 1.57
+Dry dock DRYDOC 47 1.58
+Dumping ground DMPGRD 48 1.59
+Dyke DYKCON 49 1.61
+Exclusive economic zone EXEZNE 50 1.64
+Fairway FAIRWY 51 1.65
+Fence/wall FNCLNE 52 1.66
+Ferry route FERYRT 53 1.67
+Fishery zone FSHZNE 54 1.69
+Fishing facility FSHFAC 55 1.70
+Fishing ground FSHGRD 56 1.71
+Floating dock FLODOC 57 1.74
+Fog signal FOGSIG 58 1.75
+Fortified structure FORSTC 59 1.76
+Free port area FRPARE 60 1.77
+Gate GATCON 61 1.78
+Gridiron GRIDRN 62 1.79
+Harbour area (administrative) HRBARE 63 1.80
+Harbour facility HRBFAC 64 1.81
+Hulk HULKES 65 1.83
+Ice area ICEARE 66 1.84
+Incineration area ICNARE 67 1.85
+Inshore traffic zone ISTZNE 68 1.86
+Lake LAKARE 69 1.88
+Lake shore LAKSHR 70 1.89
+Land area LNDARE 71 1.90
+Land elevation LNDELV 72 1.91
+Land region LNDRGN 73 1.92
+Landmark LNDMRK 74 1.95
+Light LIGHTS 75 1.96
+Light float LITFLT 76 1.97
+Light vessel LITVES 77 1.99
+Local magnetic anomaly LOCMAG 78 1.100
+Lock basin LOKBSN 79 1.101
+Log pond LOGPON 80 1.102
+Magnetic variation MAGVAR 81 1.103
+Marine farm/culture MARCUL 82 1.104
+Military practice area MIPARE 83 1.106
+Mooring/Warping facility MORFAC 84 1.108
+Navigation line NAVLNE 85 1.110
+Obstruction OBSTRN 86 1.111
+Offshore platform OFSPLF 87 1.112
+Offshore production area OSPARE 88 1.113
+Oil barrier OILBAR 89 1.114
+Pile PILPNT 90 1.115
+Pilot boarding place PILBOP 91 1.116
+Pipeline area PIPARE 92 1.118
+Pipeline overhead PIPOHD 93 1.119
+Pipeline submarine/on land PIPSOL 94 1.120
+Pontoon PONTON 95 1.121
+Precautionary area PRCARE 96 1.122
+Production/storage area PRDARE 97 1.124
+Pylon/bridge support PYLONS 98 1.125
+Radar line RADLNE 99 1.127
+Radar range RADRNG 100 1.128
+Radar reflector RADRFL 101 1.129
+Radar station RADSTA 102 1.130
+Radar transponder beacon RTPBCN 103 1.131
+Radio calling-in point RDOCAL 104 1.132
+Radio station RDOSTA 105 1.133
+Railway RAILWY 106 1.134
+Rapids RAPIDS 107 1.136
+Recommended route centerline RCRTCL 108 1.137
+Recommended track RECTRC 109 1.138
+Recommended traffic lane part RCTLPT 110 1.139
+Rescue station RSCSTA 111 1.140
+Restricted area RESARE 112 1.141
+Retro-reflector RETRFL 113 1.142
+River RIVERS 114 1.143
+River bank RIVBNK 115 1.144
+Road ROADWY 116 1.145
+Runway RUNWAY 117 1.148
+Sand waves SNDWAV 118 1.150
+Sea area/named water area SEAARE 119 1.151
+Sea-plane landing area SPLARE 120 1.152
+Seabed area SBDARE 121 1.153
+Shoreline construction SLCONS 122 1.154
+Signal station traffic SISTAT 123 1.155
+Signal station warning SISTAW 124 1.156
+Silo/tank SILTNK 125 1.158
+Slope topline SLOTOP 126 1.160
+Sloping ground SLOGRD 127 1.161
+Small craft facility SMCFAC 128 1.162
+Sounding SOUNDG 129 1.163
+Spring SPRING 130 1.165
+Square SQUARE 131 1.166
+Straight territorial sea baseline STSLNE 132 1.167
+Submarine transit lane SUBTLN 133 1.168
+Swept Area SWPARE 134 1.169
+Territorial sea area TESARE 135 1.172
+Tidal stream - flood/ebb TS_FEB 160 1.173
+Tidal stream - harmonic prediction TS_PRH 136 1.174
+Tidal stream - non-harmonic prediction TS_PNH 137 1.175
+Tidal stream panel data TS_PAD 138 1.176
+Tidal stream - time series TS_TIS 139 1.177
+Tide - harmonic prediction T_HMON 140 1.178
+Tide - non-harmonic prediction T_NHMN 141 1.179
+Tide - time series T_TIMS 142 1.180
+Tideway TIDEWY 143 1.181
+Topmark TOPMAR 144 1.182
+Traffic separation line TSELNE 145 1.184
+Traffic separation scheme boundary TSSBND 146 1.185
+Traffic separation scheme crossing TSSCRS 147 1.186
+Traffic separation scheme lane part TSSLPT 148 1.187
+Traffic separation scheme roundabout TSSRON 149 1.188
+Traffic separation zone TSEZNE 150 1.189
+Tunnel TUNNEL 151 1.191
+Two-way route part TWRTPT 152 1.193
+Underwater/awash rock UWTROC 153 1.194
+Unsurveyed area UNSARE 154 1.195
+Vegetation VEGATN 155 1.196
+Water turbulence WATTUR 156 1.198
+Waterfall WATFAL 157 1.199
+Weed/Kelp WEDKLP 158 1.200
+Wreck WRECKS 159 1.204
+#1.3 Meta Object Classes
+Accuracy of data M_ACCY 300 1.208
+Compilation scale of data M_CSCL 301 1.209
+Coverage M_COVR 302 1.210
+Horizontal datum of data M_HDAT 303 1.211
+Horizontal datum shift parameters M_HOPA 304 1.212
+Nautical publication information M_NPUB 305 1.213
+Navigational system of marks M_NSYS 306 1.214
+Production information M_PROD 307 1.215
+Quality of data M_QUAL 308 1.216
+Sounding datum M_SDAT 309 1.217
+Survey reliability M_SREL 310 1.218
+Units of measurement of data M_UNIT 311 1.220
+Vertical datum of data M_VDAT 312 1.221
+#1.4 Collection Object Classes 1.223
+Aggregation C_AGGR 400 1.224
+Association C_ASSO 401 1.225
+Stacked on/stacked under C_STAC 402 1.226
+#1.5 Cartographic Object Classes 1.227
+Cartographic area $AREAS 500 1.228
+Cartographic line $LINES 501 1.229
+Cartographic symbol $CSYMB 502 1.230
+Compass $COMPS 503 1.232
+Text $TEXTS 504 1.234

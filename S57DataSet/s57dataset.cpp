@@ -70,7 +70,7 @@ int S57ObjectClasses::code(const std::string& acronym)
 }
 
 //S57Attributes
-bool S57Attributes::load(const std::string& path)
+bool S57Attributes::load(const std::string& path, const S57AttributesType& attributesType)
 {
 	mAttributes.clear();
 	bool bRet = loadS57ExtRes(path, mAttributes, 6);
@@ -78,6 +78,18 @@ bool S57Attributes::load(const std::string& path)
 	{
 		S57ExtRes& s57ExtRes = mAttributes[i];
 		int iCode = s57ExtRes.code;
+		//查表
+		auto itFind = attributesType.mAttributesType.find(iCode);
+		if (itFind != attributesType.mAttributesType.end())
+		{
+			char type = itFind->second;
+			s57ExtRes.type = type;
+		}
+		else
+		{
+			s57ExtRes.type = '\0';
+		}
+
 		std::string strAcronym = s57ExtRes.acronym;
 		mAcronyms[iCode] = strAcronym;
 		mCodes[strAcronym] = iCode;
@@ -96,6 +108,26 @@ int S57Attributes::code(const std::string& acronym)
 	int iCode = mCodes[acronym];
 	return iCode;
 }
+
+bool S57AttributesType::load(const std::string& path)
+{
+	std::string content;
+	bool bRet = Utils::loadText(path.c_str(), content);
+	auto lines = Utils::split(content, "\r\n");
+	for (int iLine = 0; iLine < lines.size(); iLine++)
+	{
+		std::string line = lines[iLine];
+		auto vars = Utils::split(line, " ");
+		if (vars.size() == 3)
+		{
+			int iCode = stoi(vars[0]);
+			char type = vars[2][0];
+			mAttributesType[iCode] = type;
+		}
+	}
+	return bRet;
+}
+
 
 void S57DataSet::setRecordSubfield(const DRRecord& drRecord, Subfield& subfield)
 {
@@ -179,9 +211,10 @@ void S57DataSet::s57BufferMerge(std::vector<S57DataSet>& dataSets)
 
 }
 
+
 void S57DataSet::createS57Features()
 {
-	for (auto itFeature = mFeatures.begin(); itFeature != mFeatures.end(); itFeature++)
+	for (auto itFeature = mS57FeaturesBuffer.begin(); itFeature != mS57FeaturesBuffer.end(); itFeature++)
 	{
 		S57Feature* feature = itFeature->second;
 		S57Geometry* geometry = nullptr;
@@ -200,8 +233,8 @@ void S57DataSet::createS57Features()
 			char rcnm = 0;
 			ulong rcid = fspt.rcid(&rcnm);
 			std::tuple<unsigned char, ulong> key(rcnm, rcid);
-			auto itFindSpatial = mSpatials.find(key);
-			if (itFindSpatial == mSpatials.end())
+			auto itFindSpatial = mS57SpatialsBuffer.find(key);
+			if (itFindSpatial == mS57SpatialsBuffer.end())
 				continue;
 			S57Spatial* spatial = itFindSpatial->second;
 			if ("SOUNDG" == feature->name())
@@ -239,8 +272,8 @@ void S57DataSet::createS57Features()
 			char rcnm = 0;
 			ulong rcid = fspt.rcid(&rcnm);
 			std::tuple<unsigned char, ulong> key(rcnm, rcid);
-			auto itFindSpatial = mSpatials.find(key);
-			if (itFindSpatial == mSpatials.end())
+			auto itFindSpatial = mS57SpatialsBuffer.find(key);
+			if (itFindSpatial == mS57SpatialsBuffer.end())
 				continue;
 			S57Spatial* spatial = itFindSpatial->second;
 
@@ -287,8 +320,8 @@ void S57DataSet::createS57Features()
 				char rcnm = 0;
 				ulong rcid = fspt.rcid(&rcnm);
 				std::tuple<unsigned char, ulong> key(rcnm, rcid);
-				auto itFindSpatial = mSpatials.find(key);
-				if (itFindSpatial == mSpatials.end())
+				auto itFindSpatial = mS57SpatialsBuffer.find(key);
+				if (itFindSpatial == mS57SpatialsBuffer.end())
 					continue;
 				S57Spatial* spatial = itFindSpatial->second;
 				//内外环
@@ -341,11 +374,12 @@ void S57DataSet::createS57Features()
 		}
 		break;
 		}
+
+
 		if (geometry)
 		{
 			feature->setGeometry(geometry);
 		}
-
 
 
 		std::stringstream ss;
@@ -376,8 +410,18 @@ void S57DataSet::createS57Features()
 			}
 		}
 
+		mFeatures.push_back(feature);
+
 		//Utils::log(ss.str());
 	}
+
+	//最后清掉缓存
+	for (auto it = mS57SpatialsBuffer.begin(); it != mS57SpatialsBuffer.end(); it++)
+	{
+		delptr(it->second);
+	}
+	mS57SpatialsBuffer.clear();
+	mS57FeaturesBuffer.clear();//Feature指针已经移入mFeatures
 }
 
 void S57DataSet::iso8211ConvertToS57Buffer()
@@ -718,11 +762,11 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 					continue;
 				//feature->fields.push_back(subfield);
 			}
-			if (mFeatures[feature->mFRID.RCID])
+			if (mS57FeaturesBuffer[feature->mFRID.RCID])
 			{
 				assert(false);//has exist
 			}
-			mFeatures[feature->mFRID.RCID] = feature;
+			mS57FeaturesBuffer[feature->mFRID.RCID] = feature;
 		}
 		else if (FOID == tag) {
 			for (auto itDRRecord = dr.drFieldArea.drRecords.begin(); itDRRecord != dr.drFieldArea.drRecords.end(); itDRRecord++)
@@ -946,11 +990,11 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 					continue;
 			}
 			std::tuple<unsigned char, ulong> key(spatial->mVRID.RCNM, spatial->mVRID.RCID);
-			if (mSpatials[key])
+			if (mS57SpatialsBuffer[key])
 			{
 				assert(false);//has exist
 			}
-			mSpatials[key] = spatial;
+			mS57SpatialsBuffer[key] = spatial;
 		}
 		else if (ATTV == tag) {
 			ATTVRecord attv;
@@ -1093,17 +1137,23 @@ bool S57DataSet::save(const std::string& path)
 void S57DataSet::clear()
 {
 	mISO8211Binary.clear();
+	for (auto it = mS57FeaturesBuffer.begin(); it != mS57FeaturesBuffer.end(); it++)
+	{
+		delete it->second;
+	}
+	mS57FeaturesBuffer.clear();
+
 	for (auto it = mFeatures.begin(); it != mFeatures.end(); it++)
 	{
-		delete it->second;
+		delete *it;
 	}
-	mFeatures.clear();
+	mS57FeaturesBuffer.clear();
 
-	for (auto it = mSpatials.begin(); it != mSpatials.end(); it++)
+	for (auto it = mS57SpatialsBuffer.begin(); it != mS57SpatialsBuffer.end(); it++)
 	{
 		delete it->second;
 	}
-	mSpatials.clear();
+	mS57SpatialsBuffer.clear();
 }
 
 void S57DataSet::initMeta()
@@ -2324,7 +2374,7 @@ std::string S57DataSet::createCode(std::string* metaStructs, std::string* metaCr
 	auto s = strISO8211ConvertToS57Dataset.str();
 	Utils::log(s);
 	return strRet;
-}
+	}
 
 #ifdef WIN32
 #define OS_CODEC "GBK"

@@ -10,14 +10,7 @@
 #include "s57feature.h"
 #include "s57spatial.h"
 
-
-
-
-
-
-
-
-
+//000数据集
 class S57DATASET_EXPORT S57DataSet :public ISO8211
 {
 public:
@@ -73,11 +66,12 @@ public://load used
 	DSPMRecord mDSPM;//DSPM
 	DSACRecord mDSAC;//DSAC
 	CATDRecord mCATD;//CATD
-	std::map<ulong, S57Feature*> mFeatures;
-	std::map<std::tuple<unsigned char, ulong>, S57Spatial*> mSpatials;//RCNM/RCID/SPATIAL
+	std::vector<S57Feature*> mFeatures;
 	void iso8211ConvertToS57Buffer();//转换至 S57 ISO8211 Buffer
 	void s57BufferMerge(std::vector<S57DataSet>& dataSets);//S57 ISO8211 Buffer 合并更新数据集
 	void createS57Features();//生成最终的S57数据
+	std::map<ulong, S57Feature*> mS57FeaturesBuffer;
+	std::map<std::tuple<unsigned char, ulong>, S57Spatial*> mS57SpatialsBuffer;//RCNM/RCID/SPATIAL
 	void clear();
 public://S57 Object classes
 	S57ObjectClasses* mS57ObjectClasses;

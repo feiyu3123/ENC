@@ -88,7 +88,7 @@ typedef char B_;
 typedef char R_;
 typedef char I_;
 
-union UnionInt
+union S57DATASET_EXPORT UnionInt
 {
 	int intValue;
 	struct
@@ -208,14 +208,14 @@ union UnionInt
 
 
 
-enum class S57DATASET_EXPORT ORNT
+enum class S57DATASET_EXPORT S57DATASET_EXPORT ORNT
 {
 	ORNT_Forward = 1,//F
 	ORNT_Reverse = 2,//R
 	ORNT_NULL = 255,
 };
 
-enum class S57DATASET_EXPORT USAG
+enum class S57DATASET_EXPORT S57DATASET_EXPORT USAG
 {
 	USAG_ExteriorBoundaries = 1,//Exterior boundaries
 	USAG_InteriorBoundaries = 2,//Interior boundaries
@@ -223,14 +223,14 @@ enum class S57DATASET_EXPORT USAG
 	USAG_NULL = 255
 };
 
-enum class S57DATASET_EXPORT MASK
+enum class S57DATASET_EXPORT S57DATASET_EXPORT MASK
 {
 	MASK_Mask = 1,//Mask
 	MASK_Show = 2,//Show
 	MASK_MaskingIsNotRelevant = 255//Masking is not relevant
 };
 
-enum class S57DATASET_EXPORT TOPI
+enum class S57DATASET_EXPORT S57DATASET_EXPORT TOPI
 {
 	TOPI_BeginningNode = 1,
 	TOPI_EndNode = 2,
@@ -241,12 +241,13 @@ enum class S57DATASET_EXPORT TOPI
 };
 
 
-class S57ExtRes//外部资源
+class S57DATASET_EXPORT S57ExtRes//外部资源
 {
 public:
 	std::string description;
 	std::string acronym;
 	int code;
+	char type;//Attribute type
 };
 
 class S57DATASET_EXPORT S57ObjectClasses
@@ -261,16 +262,31 @@ public:
 	std::map<std::string, int> mCodes;
 };
 
-class S57DATASET_EXPORT S57Attributes
+class S57DATASET_EXPORT S57AttributesType
 {
 public:
 	bool load(const std::string& path);
+	std::map<int, char> mAttributesType;
+};
+
+class S57DATASET_EXPORT S57Attributes
+{
+public:
+	bool load(const std::string& path, const S57AttributesType& attributesType);
 	std::string acronym(int code);
 	int code(const std::string& acronym);
 public:
 	std::vector<S57ExtRes> mAttributes;
 	std::map<int, std::string> mAcronyms;
 	std::map<std::string, int> mCodes;
+};
+
+class S57DATASET_EXPORT S57Field
+{
+public:
+	std::string name;//字段名
+	std::string value;//字段值文本
+	char type;//Attribute 字段类型
 };
 
 #endif

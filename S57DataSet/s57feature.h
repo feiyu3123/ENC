@@ -25,7 +25,7 @@ public://S57
 	void setGeometry(S57Geometry* geometry);
 	S57Geometry* geometry();
 
-	std::vector<S57Field> fields;
+	std::map<std::string, S57Field> mFields;
 protected:
 	S57ObjectClasses* mObjectClasses;
 	S57Geometry* mGeometry;

@@ -59,13 +59,23 @@ bool S57ObjectClasses::load(const std::string& path)
 
 std::string S57ObjectClasses::acronym(int code)
 {
-	std::string strAcronym = mAcronyms[code];
+	std::string strAcronym;
+	auto itFind = mAcronyms.find(code);
+	if (itFind != mAcronyms.end())
+	{
+		strAcronym = itFind->second;
+	}
 	return strAcronym;
 }
 
 int S57ObjectClasses::code(const std::string& acronym)
 {
-	int iCode = mCodes[acronym];
+	int iCode = -1;
+	auto itFind = mCodes.find(acronym);
+	if (itFind != mCodes.end())
+	{
+		iCode = itFind->second;
+	}
 	return iCode;
 }
 
@@ -82,25 +92,42 @@ bool S57Attributes::load(const std::string& path, const S57AttributesType& attri
 		auto itFind = attributesType.mAttributesType.find(iCode);
 		if (itFind != attributesType.mAttributesType.end())
 		{
-			char type = itFind->second;
+			S57AttributeType type = itFind->second;
 			s57ExtRes.type = type;
 		}
 		else
 		{
-			s57ExtRes.type = '\0';
+			s57ExtRes.type = S57AttributeType::UNKNOWN;
 		}
 
 		std::string strAcronym = s57ExtRes.acronym;
 		mAcronyms[iCode] = strAcronym;
 		mCodes[strAcronym] = iCode;
+		mTypes[iCode] = s57ExtRes.type;
 	}
 	return bRet;
 }
 
 std::string S57Attributes::acronym(int code)
 {
-	std::string strAcronym = mAcronyms[code];
+	std::string strAcronym;
+	auto itFind = mAcronyms.find(code);
+	if (itFind != mAcronyms.end())
+	{
+		strAcronym=itFind->second;
+	}
 	return strAcronym;
+}
+
+S57AttributeType S57Attributes::type(int code)
+{
+	S57AttributeType emType = S57AttributeType::UNKNOWN;
+	auto itFind = mTypes.find(code);
+	if (itFind != mTypes.end())
+	{
+		emType = itFind->second;
+	}
+	return emType;
 }
 
 int S57Attributes::code(const std::string& acronym)
@@ -122,7 +149,7 @@ bool S57AttributesType::load(const std::string& path)
 		{
 			int iCode = stoi(vars[0]);
 			char type = vars[2][0];
-			mAttributesType[iCode] = type;
+			mAttributesType[iCode] = S57AttributeType(type);
 		}
 	}
 	return bRet;
@@ -396,6 +423,12 @@ void S57DataSet::createS57Features()
 				std::string acronym = mS57Attributes->acronym(attf.ATTL);
 				std::string value = textValue(false, attf.ATVL, attf.ATVLSize);
 				ss << "\t" << acronym << ":" << value << std::endl;
+				//生成字段
+				S57Field field;
+				field.name = acronym;
+				field.value = value;
+				field.type = mS57Attributes->type(attf.ATTL);
+				feature->mFields[acronym] = field;
 			}
 
 			for (int iField = 0; iField < feature->mNATFs.size(); iField++)
@@ -406,6 +439,12 @@ void S57DataSet::createS57Features()
 					std::string acronym = mS57Attributes->acronym(natf.ATTL);
 					std::string value = textValue(true, natf.ATVL, natf.ATVLSize);
 					ss << "\t" << acronym << ":" << value << std::endl;
+					//生成字段
+					S57Field field;
+					field.name = acronym;
+					field.value = value;
+					field.type = mS57Attributes->type(natf.ATTL);
+					feature->mFields[acronym] = field;
 				}
 			}
 		}
@@ -2374,7 +2413,7 @@ std::string S57DataSet::createCode(std::string* metaStructs, std::string* metaCr
 	auto s = strISO8211ConvertToS57Dataset.str();
 	Utils::log(s);
 	return strRet;
-	}
+}
 
 #ifdef WIN32
 #define OS_CODEC "GBK"

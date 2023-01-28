@@ -241,13 +241,76 @@ enum class S57DATASET_EXPORT S57DATASET_EXPORT TOPI
 };
 
 
+//S57 S57-Appendix A,Charpter 2
+//2.1 Introduction
+enum class S57DATASET_EXPORT S57AttributeType
+{
+	UNKNOWN = '0',
+	/*
+		The expected input is a number selected from a list of predefined attribute values. Exactly one value must be chosen.
+		The abbreviation for this type is >E= .
+	*/
+	ENUM = 'E',
+	/*
+		The expected input is a list of one or more numbers selected
+		from a list of pre-defined attribute values. Where more than one
+		value is used, they must normally be separated by commas but
+		in special cases slashes (A /@ ) may be used. The abbreviation for
+		this type is >L= .
+
+		Note: In some cases, dependency exists between different
+		attributes of a given object e.g. a bridge (BRIDGE) may have
+		the values >concreted= and >iron/steel= for the attribute NATCON
+		(Nature of Construction) and the values >red= and >green= for the
+		attribute COLOUR. Even if it is known that the concreted part
+		of the bridge is red and the iron/steel part is green, the Object
+		Catalogue provides no means of indicating this relationship.
+		However, such relationships may be formalized for a given
+		application in which case the relationship must be described in
+		the appropriate Product Specification (see S-57 Appendix B).
+	*/
+	LIST = 'L',
+
+	/*
+		The expected input is a floating point numeric value with defined
+		range, resolution, units and format. The abbreviation for this
+		type is >F= .
+	*/
+	FLOAT = 'F',
+
+	/*
+		The expected input is an integer numeric value with defined
+		range, units and format. The abbreviation for this type is >I= .
+	*/
+	INTEGER = 'I',
+
+	/*
+		The expected input is a string of ASCII characters in a
+		predefined format. The information is encoded according to
+		defined coding systems e.g.: the nationality will be encoded by
+		a two character field specified by ISO 3166 >Codes for the
+		Representation of Names of Countries= , e.g. Canada => >CA=
+		(refer to S-57 Appendix A Annex A). The abbreviation for this
+		type is >A= .
+	*/
+	CODED_STRING = 'A',
+
+	/*
+		The expected input is a free-format alphanumeric string. It may
+		be a file name which points to a text or graphic file. The
+		abbreviation for this type is >S= .
+	*/
+	FREE_TEXT = 'S',
+};
+
+
 class S57DATASET_EXPORT S57ExtRes//外部资源
 {
 public:
 	std::string description;
 	std::string acronym;
 	int code;
-	char type;//Attribute type
+	S57AttributeType type;//Attribute type
 };
 
 class S57DATASET_EXPORT S57ObjectClasses
@@ -262,11 +325,15 @@ public:
 	std::map<std::string, int> mCodes;
 };
 
+
+
+
+
 class S57DATASET_EXPORT S57AttributesType
 {
 public:
 	bool load(const std::string& path);
-	std::map<int, char> mAttributesType;
+	std::map<int, S57AttributeType> mAttributesType;
 };
 
 class S57DATASET_EXPORT S57Attributes
@@ -275,10 +342,12 @@ public:
 	bool load(const std::string& path, const S57AttributesType& attributesType);
 	std::string acronym(int code);
 	int code(const std::string& acronym);
+	S57AttributeType type(int code);
 public:
 	std::vector<S57ExtRes> mAttributes;
 	std::map<int, std::string> mAcronyms;
 	std::map<std::string, int> mCodes;
+	std::map<int, S57AttributeType> mTypes;
 };
 
 class S57DATASET_EXPORT S57Field
@@ -286,7 +355,10 @@ class S57DATASET_EXPORT S57Field
 public:
 	std::string name;//字段名
 	std::string value;//字段值文本
-	char type;//Attribute 字段类型
+	S57AttributeType type;//Attribute 字段类型
+	double toDouble();
+	int toInt();
+	std::string toString();
 };
 
 #endif

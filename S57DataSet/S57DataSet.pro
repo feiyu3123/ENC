@@ -32,7 +32,8 @@ SOURCES += \
     s57meta.cpp \
     s57dataset.cpp \
     s57feature.cpp \
-    s57spatial.cpp
+    s57spatial.cpp \
+    s57type.cpp
 
 HEADERS += \
     s57geometry.h \

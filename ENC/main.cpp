@@ -10,13 +10,13 @@ int main(int argc, char *argv[])
 {
 	//加载外部资源
 	S57ObjectClasses objectClasses;
-	objectClasses.load("D:/opensource/ENC/bin/debug/Object Classes.txt");
+	objectClasses.load("D:/opensource/ENC/bin/debug/script/Object Classes.txt");
 
 	S57AttributesType attributesType;
-	attributesType.load("D:/opensource/ENC/bin/debug/AttributesType.txt");
+	attributesType.load("D:/opensource/ENC/bin/debug/script/AttributesType.txt");
 
 	S57Attributes attributes;
-	attributes.load("D:/opensource/ENC/bin/debug/Attributes.txt", attributesType);
+	attributes.load("D:/opensource/ENC/bin/debug/script/Attributes.txt", attributesType);
 
 	S57DataSet dataSetS57;
 	dataSetS57.setS57ObjectClasses(&objectClasses);

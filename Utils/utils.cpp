@@ -452,6 +452,7 @@ std::string Utils::generateKey(int keyLen)
 
 void Utils::createDir(const std::string& dir_)
 {
+
 	std::string dir = dir_;
 #ifdef WIN32
 	if (_access(dir.c_str(), 00) == 0)
@@ -484,8 +485,7 @@ void Utils::createDir(const std::string& dir_)
 	assert(0);
 #endif // WIN32
 
-
-	}
+}
 
 std::string Utils::formatDir(const std::string& dir, bool appendFlag, char split)
 {

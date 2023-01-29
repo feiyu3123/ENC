@@ -114,7 +114,7 @@ std::string S57Attributes::acronym(int code)
 	auto itFind = mAcronyms.find(code);
 	if (itFind != mAcronyms.end())
 	{
-		strAcronym=itFind->second;
+		strAcronym = itFind->second;
 	}
 	return strAcronym;
 }
@@ -379,6 +379,11 @@ void S57DataSet::createS57Features()
 					}
 				}
 				break;
+				}
+
+				if (ring.points.size() == 0)
+				{
+					continue;
 				}
 
 				switch (emUSAG)

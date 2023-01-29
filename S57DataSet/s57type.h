@@ -208,14 +208,14 @@ union S57DATASET_EXPORT UnionInt
 
 
 
-enum class S57DATASET_EXPORT S57DATASET_EXPORT ORNT
+enum class S57DATASET_EXPORT ORNT
 {
 	ORNT_Forward = 1,//F
 	ORNT_Reverse = 2,//R
 	ORNT_NULL = 255,
 };
 
-enum class S57DATASET_EXPORT S57DATASET_EXPORT USAG
+enum class S57DATASET_EXPORT USAG
 {
 	USAG_ExteriorBoundaries = 1,//Exterior boundaries
 	USAG_InteriorBoundaries = 2,//Interior boundaries
@@ -223,14 +223,14 @@ enum class S57DATASET_EXPORT S57DATASET_EXPORT USAG
 	USAG_NULL = 255
 };
 
-enum class S57DATASET_EXPORT S57DATASET_EXPORT MASK
+enum class S57DATASET_EXPORT MASK
 {
 	MASK_Mask = 1,//Mask
 	MASK_Show = 2,//Show
 	MASK_MaskingIsNotRelevant = 255//Masking is not relevant
 };
 
-enum class S57DATASET_EXPORT S57DATASET_EXPORT TOPI
+enum class S57DATASET_EXPORT TOPI
 {
 	TOPI_BeginningNode = 1,
 	TOPI_EndNode = 2,

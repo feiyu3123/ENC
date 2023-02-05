@@ -3,7 +3,7 @@
 #include <iostream>
 #include "../Utils/utils.h"
 
-bool DebugISO8211Serial = false;
+bool DebugISO8211Serial = true;
 
 DRRecord::DRRecord()
 {
@@ -23,9 +23,11 @@ void DRRecord::setBinaryOffset(int iBinaryOffset)
 {
 	binaryOffset = iBinaryOffset;
 
-	if (274127 == iBinaryOffset)
+	if (197746 == iBinaryOffset)
 	{
 		bool debug = true;
+
+		Utils::log("---------------------------------------");
 	}
 }
 
@@ -1272,9 +1274,11 @@ bool ISO8211::loadBinary(const std::vector<char>& binary, std::string* firstFiel
 			std::vector<std::tuple<std::string, int, int>> drs;
 			for (int iDRDirectory = 0; iDRDirectory < iDRDirectoryCount; iDRDirectory++)
 			{
+				
 				std::string drFieldTag(&binary[iDRDirectoryField], iSizeOfFieldTagField); iDRDirectoryField += iSizeOfFieldTagField;
 				int iFieldLength = Utils::stingToInt(&binary[iDRDirectoryField], iSizeOfFieldLengthField); iDRDirectoryField += iSizeOfFieldLengthField;
 				int iFieldPosition = Utils::stingToInt(&binary[iDRDirectoryField], iSizeOfFieldPositionField); iDRDirectoryField += iSizeOfFieldPositionField;
+
 				//iDRDirectoryFieldLeader += 1;//FT
 				auto tup = std::tuple<std::string, int, int>(drFieldTag, iFieldLength, iFieldPosition);
 				drs.push_back(tup);

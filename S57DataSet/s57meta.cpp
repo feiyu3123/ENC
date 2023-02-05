@@ -5,7 +5,7 @@
 #include "s57dataset.h"
 
 
-b24 FSPTRecord::rcid(char* RCNM)
+b24 RCID(const char* NAME, unsigned char* RCNM)
 {
 	if (RCNM)
 	{

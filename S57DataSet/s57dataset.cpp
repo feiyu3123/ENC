@@ -245,7 +245,7 @@ void S57DataSet::createS57Features()
 	{
 		S57Feature* feature = itFeature->second;
 		S57Geometry* geometry = nullptr;
-		if (feature->mFRID.RCID == 300)
+		if (feature->mFRID.RCID == 1758)
 		{
 			bool debug = true;
 		}
@@ -257,8 +257,8 @@ void S57DataSet::createS57Features()
 			if (feature->mFSPTs.size() == 0)
 				continue;
 			FSPTRecord& fspt = feature->mFSPTs[0];
-			char rcnm = 0;
-			ulong rcid = fspt.rcid(&rcnm);
+			unsigned char rcnm = 0;
+			ulong rcid = RCID(fspt.NAME, &rcnm);
 			std::tuple<unsigned char, ulong> key(rcnm, rcid);
 			auto itFindSpatial = mS57SpatialsBuffer.find(key);
 			if (itFindSpatial == mS57SpatialsBuffer.end())
@@ -295,42 +295,28 @@ void S57DataSet::createS57Features()
 		{
 			if (feature->mFSPTs.size() == 0)
 				continue;
-			FSPTRecord& fspt = feature->mFSPTs[0];
-			char rcnm = 0;
-			ulong rcid = fspt.rcid(&rcnm);
-			std::tuple<unsigned char, ulong> key(rcnm, rcid);
-			auto itFindSpatial = mS57SpatialsBuffer.find(key);
-			if (itFindSpatial == mS57SpatialsBuffer.end())
-				continue;
-			S57Spatial* spatial = itFindSpatial->second;
-
+			std::vector<S57Ring2D> edges;
+			createEdges(feature, edges);
 			S57Line* line = nullptr;
-			geometry = line = new S57Line();
+			if (line == nullptr&&edges.size() > 0)
+			{
+				geometry = line = new S57Line();
+			}
+			else
+			{
+				continue;
+			}
 
-			ORNT emORNT = ORNT(fspt.ORNT);
-			switch (emORNT)
+			S57Ring2D lineBuffer;
+			createExteriorRing(edges, lineBuffer);
+			if (lineBuffer.points.size() > 0)
 			{
-			case ORNT::ORNT_Forward:
-			{
-				for (int iSG2D = 0; iSG2D < spatial->mSG2Ds.size(); iSG2D--)
-				{
-					SG2DRecord& sg2d = spatial->mSG2Ds[iSG2D];
-					double x = Utils::div(sg2d.XCOO, mDSPM.COMF);
-					double y = Utils::div(sg2d.YCOO, mDSPM.COMF);
-					line->points.push_back(XY(x, y));
-				}
+				line->points = lineBuffer.points;
 			}
-			break;
-			case ORNT::ORNT_Reverse:
+			if (line->points.size() == 0)
 			{
-				for (int iSG2D = spatial->mSG2Ds.size() - 1; iSG2D >= 0; iSG2D--)
-				{
-					SG2DRecord& sg2d = spatial->mSG2Ds[iSG2D];
-					double x = Utils::div(sg2d.XCOO, mDSPM.COMF);
-					double y = Utils::div(sg2d.YCOO, mDSPM.COMF);
-					line->points.push_back(XY(x, y));
-				}
-			}
+				delptr(line);
+				geometry = nullptr;
 			}
 		}
 		break;
@@ -338,70 +324,30 @@ void S57DataSet::createS57Features()
 		{
 			if (feature->mFSPTs.size() == 0)
 				continue;
+			std::vector<S57Ring2D> edges;
+			createEdges(feature, edges);
 			S57Area* area = nullptr;
-			geometry = area = new S57Area();
-
-			for (int i = 0; i < feature->mFSPTs.size(); i++)
+			if (area == nullptr&&edges.size() > 0)
 			{
-				FSPTRecord& fspt = feature->mFSPTs[i];
-				char rcnm = 0;
-				ulong rcid = fspt.rcid(&rcnm);
-				std::tuple<unsigned char, ulong> key(rcnm, rcid);
-				auto itFindSpatial = mS57SpatialsBuffer.find(key);
-				if (itFindSpatial == mS57SpatialsBuffer.end())
-					continue;
-				S57Spatial* spatial = itFindSpatial->second;
-				//内外环
-				USAG emUSAG = USAG(fspt.USAG);
-				ORNT emORNT = ORNT(fspt.ORNT);
-				S57Ring2D ring;
-				switch (emORNT)
-				{
-				case ORNT::ORNT_Forward:
-				{
-					for (int iSG2D = 0; iSG2D < spatial->mSG2Ds.size(); iSG2D--)
-					{
-						SG2DRecord& sg2d = spatial->mSG2Ds[iSG2D];
-						double x = Utils::div(sg2d.XCOO, mDSPM.COMF);
-						double y = Utils::div(sg2d.YCOO, mDSPM.COMF);
-						ring.points.push_back(XY(x, y));
-					}
-				}
-				break;
-				case ORNT::ORNT_Reverse:
-				{
-					for (int iSG2D = spatial->mSG2Ds.size() - 1; iSG2D >= 0; iSG2D--)
-					{
-						SG2DRecord& sg2d = spatial->mSG2Ds[iSG2D];
-						double x = Utils::div(sg2d.XCOO, mDSPM.COMF);
-						double y = Utils::div(sg2d.YCOO, mDSPM.COMF);
-						ring.points.push_back(XY(x, y));
-					}
-				}
-				break;
-				}
+				geometry = area = new S57Area();
+			}
+			else
+			{
+				continue;
+			}
 
-				if (ring.points.size() == 0)
-				{
-					continue;
-				}
-
-				switch (emUSAG)
-				{
-				case USAG::USAG_ExteriorBoundaries://外环
-				{
-					area->exteriorRings.push_back(ring);
-				}
-				break;
-				case USAG::USAG_InteriorBoundaries://内环
-				{
-					area->interiorRings.push_back(ring);
-				}
-				break;
-
-				}
+			S57Ring2D exteriorRing;
+			createExteriorRing(edges, exteriorRing);
+			if (exteriorRing.points.size() > 0)
+			{
+				area->exteriorRings.push_back(exteriorRing);
 
 
+			}
+			if (area->exteriorRings.size() == 0)
+			{
+				delptr(area);
+				geometry = nullptr;
 			}
 		}
 		break;
@@ -466,6 +412,132 @@ void S57DataSet::createS57Features()
 	}
 	mS57SpatialsBuffer.clear();
 	mS57FeaturesBuffer.clear();//Feature指针已经移入mFeatures
+}
+
+void S57DataSet::createEdges(S57Feature * feature, std::vector<S57Ring2D> &edges)
+{
+	for (int iEdge = 0; iEdge < feature->mFSPTs.size(); iEdge++)//取边的信息
+	{
+		FSPTRecord& fspt = feature->mFSPTs[iEdge];
+		unsigned char rcnm = 0;
+		ulong rcid = RCID(fspt.NAME, &rcnm);
+		if (765895391 == rcid)
+		{
+			bool debug = true;
+		}
+
+		std::string strDebug = Utils::formatString("%d,%d", rcid, rcnm);
+		std::tuple<unsigned char, ulong> key(rcnm, rcid);
+		auto itFindSpatial = mS57SpatialsBuffer.find(key);
+		if (itFindSpatial == mS57SpatialsBuffer.end())
+			continue;
+
+
+		S57Spatial* spatial = itFindSpatial->second;
+		//内外环
+		USAG emUSAG = USAG(fspt.USAG);
+		ORNT emORNT = ORNT(fspt.ORNT);
+		MASK emMASK = MASK(fspt.MASK);
+
+		S57Ring2D ring;
+
+		//[==下面一段规则化处理
+		//Connected node连接节点信息
+		int iConnectedNodeRCID0 = 0;
+		int iConnectedNodeRCID1 = 0;
+		if (spatial->mVRPTs.size() > 1)
+		{
+			VRPTRecord& vrpt0 = spatial->mVRPTs[0];
+			VRPTRecord& vrpt1 = spatial->mVRPTs[1];
+
+			iConnectedNodeRCID0 = RCID(vrpt0.NAME);
+			iConnectedNodeRCID1 = RCID(vrpt1.NAME);
+		}
+		else
+		{
+			assert(false);//只有一个连接点???
+		}
+
+		int iStart = 0;//开始
+		int iEnd = 0;//结束
+		int iInc = 0;//自增量
+		int iConnectedNodeRCIDStart = 0;
+		int iConnectedNodeRCIDEnd = 0;
+		switch (emORNT)
+		{
+		case ORNT::ORNT_Reverse://逆时针
+		{
+			iStart = spatial->mSG2Ds.size() - 1;
+			iEnd = 0;
+			iInc = -1;
+			iConnectedNodeRCIDStart = iConnectedNodeRCID1;
+			iConnectedNodeRCIDEnd = iConnectedNodeRCID0;
+		}
+		break;
+		case ORNT::ORNT_Forward://顺时针
+		{
+			iStart = 0;
+			iEnd = spatial->mSG2Ds.size() - 1;
+			iInc = 1;
+			iConnectedNodeRCIDStart = iConnectedNodeRCID0;
+			iConnectedNodeRCIDEnd = iConnectedNodeRCID1;
+		}
+		break;
+		}
+		//==]
+
+		{
+			//起始点
+			double x = 0;
+			double y = 0;
+			if (getSG2DPoint(getSpatial(RCNM_VC, iConnectedNodeRCIDStart), x, y))
+			{
+				ring.points.push_back(XY(x, y));
+			}
+
+			//边
+			if (spatial->mSG2Ds.size() == 1)
+			{
+				if (getSG2DPoint(spatial, x, y))
+				{
+					ring.points.push_back(XY(x, y));
+				}
+			}
+			else
+			{
+				for (int iSG2D = iStart; iSG2D != iEnd + iInc; iSG2D += iInc)
+				{
+					SG2DRecord& sg2d = spatial->mSG2Ds[iSG2D];
+					double x = Utils::div(sg2d.XCOO, mDSPM.COMF);
+					double y = Utils::div(sg2d.YCOO, mDSPM.COMF);
+					ring.points.push_back(XY(x, y));
+				}
+			}
+			//结束点
+			if (getSG2DPoint(getSpatial(RCNM_VC, iConnectedNodeRCIDEnd), x, y))
+			{
+				ring.points.push_back(XY(x, y));
+			}
+		}
+		//
+		//if (emUSAG == USAG::USAG_ExteriorBoundaries)
+		{
+			edges.push_back(ring);
+		}
+		/*else if (emUSAG == USAG::USAG_InteriorBoundaries)
+		{
+		area->interiorRings.push_back(ring);
+		}*/
+
+		std::stringstream ss;
+		ss << "Edge index:" << iEdge;
+		for (int i = 0; i < ring.points.size(); i++)
+		{
+			XY& xy = ring.points[i];
+			ss << " X:" << xy.x << ",Y:" << xy.y;
+		}
+		Utils::log(ss.str());
+	}
 }
 
 void S57DataSet::iso8211ConvertToS57Buffer()
@@ -804,7 +876,6 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else
 					continue;
-				//feature->fields.push_back(subfield);
 			}
 			if (mS57FeaturesBuffer[feature->mFRID.RCID])
 			{
@@ -829,7 +900,6 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else
 					continue;
-				//feature->fields.push_back(subfield);
 			}
 		}
 		else if (NATF == tag) {
@@ -869,7 +939,6 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else
 					continue;
-				//feature->fields.push_back(subfield);
 			}
 		}
 		else if (ATTF == tag) {
@@ -904,7 +973,6 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else
 					continue;
-				//feature->fields.push_back(subfield);
 			}
 
 		}
@@ -925,7 +993,6 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else
 					continue;
-				//feature->fields.push_back(subfield);
 			}
 		}
 		else if (FFPT == tag) {
@@ -948,12 +1015,12 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 					ffpt.COMT = new char[str_.size() + 1];
 					memset(ffpt.COMT, 0, str_.size() + 1);
 					memcpy(ffpt.COMT, str_.data(), str_.size());
+					feature->mFFPTs.push_back(ffpt);
 				}
 				else
 					continue;
 				//feature->fields.push_back(subfield);
 			}
-			feature->mFFPTs.push_back(ffpt);
 		}
 		else if (FSPC == tag) {
 			for (auto itDRRecord = dr.drFieldArea.drRecords.begin(); itDRRecord != dr.drFieldArea.drRecords.end(); itDRRecord++)
@@ -1033,8 +1100,17 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				else
 					continue;
 			}
+
+			if (spatial
+				&&spatial->mVRID.RCNM == 130
+				&& spatial->mVRID.RCID == 765899426)
+			{
+				bool debug = true;
+			}
+
 			std::tuple<unsigned char, ulong> key(spatial->mVRID.RCNM, spatial->mVRID.RCID);
-			if (mS57SpatialsBuffer[key])
+			auto itFind = mS57SpatialsBuffer.find(key);
+			if (itFind != mS57SpatialsBuffer.end())
 			{
 				assert(false);//has exist
 			}
@@ -1055,11 +1131,11 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 					attv.ATVL = new char[str_.size() + 1];
 					memset(attv.ATVL, 0, str_.size() + 1);
 					memcpy(attv.ATVL, str_.data(), str_.size());
+					spatial->mATTVs.push_back(attv);
 				}
 				else
 					continue;
 			}
-			spatial->mATTVs.push_back(attv);
 		}
 		else if (VRPC == tag) {
 			for (auto itDRRecord = dr.drFieldArea.drRecords.begin(); itDRRecord != dr.drFieldArea.drRecords.end(); itDRRecord++)
@@ -1086,9 +1162,9 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				std::string drRecordFieldTag = itDRRecord->fieldTag;
 				DRFieldArea::createSubfield(*itDRRecord, subfield);
 				if ("*NAME" == drRecordFieldTag) {
-					auto str_ = subfield.toString();
+					auto bin_ = subfield.binary();
 					memset(vrpt.NAME, 0, sizeof(vrpt.NAME));
-					memcpy(vrpt.NAME, str_.data(), str_.size());
+					memcpy(vrpt.NAME, bin_.data(), bin_.size());
 				}
 				else if ("ORNT" == drRecordFieldTag) {
 					vrpt.ORNT = subfield.uint8Value();
@@ -1101,11 +1177,11 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 				}
 				else if ("MASK" == drRecordFieldTag) {
 					vrpt.MASK = subfield.uint8Value();
+					spatial->mVRPTs.push_back(vrpt);
 				}
 				else
 					continue;
 			}
-			spatial->mVRPTs.push_back(vrpt);
 		}
 		else if (SGCC == tag) {
 			SGCCRecord sgcc;
@@ -1128,6 +1204,7 @@ void S57DataSet::iso8211ConvertToS57Buffer()
 			spatial->mSGCCs.push_back(sgcc);
 		}
 		else if (SG2D == tag) {
+
 			SG2DRecord sg2d;
 			for (auto itDRRecord = dr.drFieldArea.drRecords.begin(); itDRRecord != dr.drFieldArea.drRecords.end(); itDRRecord++)
 			{
@@ -2421,7 +2498,7 @@ std::string S57DataSet::createCode(std::string* metaStructs, std::string* metaCr
 }
 
 #ifdef WIN32
-#define OS_CODEC "GBK"
+#define OS_CODEC "UTF-8"
 #else
 #define OS_CODEC "UTF-8"
 #endif
@@ -2745,4 +2822,159 @@ void S57DataSet::Sample()
 		//*/
 
 	}
+}
+
+S57Spatial* S57DataSet::getSpatial(unsigned char rcnm, ulong rcid)
+{
+	S57Spatial* spatial = nullptr;
+	std::tuple<unsigned char, ulong> key(rcnm, rcid);
+	auto itFind = mS57SpatialsBuffer.find(key);
+	if (itFind != mS57SpatialsBuffer.end())
+	{
+		spatial = itFind->second;
+	}
+	return spatial;
+}
+
+bool S57DataSet::getSG2DPoint(S57Spatial* spatial, double& x, double& y)
+{
+	bool bRet = false;
+	if (spatial)
+	{
+		if (spatial->mSG2Ds.size() > 0)
+		{
+			SG2DRecord& sg2d = spatial->mSG2Ds[0];
+			x = Utils::div(sg2d.XCOO, mDSPM.COMF);
+			y = Utils::div(sg2d.YCOO, mDSPM.COMF);
+			bRet = true;
+		}
+	}
+	return bRet;
+}
+
+
+bool S57DataSet::createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing)//创建外环
+{
+	bool bRet = false;
+	if (edges.size() == 1)
+	{
+		exteriorRing = edges[0];
+		bRet = true;
+	}
+	else if (edges.size() > 1)
+	{
+		//思路:不停查找首尾相连的边,形成外环
+		std::vector<int> usedEdges;
+		std::vector<S57Ring2D> edgesClone = edges;
+		int iEdgeCount = edges.size();
+		for (int i = usedEdges.size(); i < iEdgeCount; i++)
+		{
+			if (usedEdges.size() == 0)
+			{
+				const S57Ring2D& ring = edgesClone[0];
+				exteriorRing.points.insert(exteriorRing.points.end(), ring.points.begin(), ring.points.end());
+				usedEdges.push_back(0);
+				vectorRemoveAt<S57Ring2D>(edgesClone, 0);
+			}
+			else
+			{
+				bool isTailInsert = true;//头插,尾插
+				bool isForword = true;//顺时针,逆时针
+				auto itFindEdge = std::find_if(edgesClone.begin(), edgesClone.end(), [&](const S57Ring2D& ringItem)->bool {
+					if (ringItem.points.size() > 0 && exteriorRing.points.size() > 0)
+					{
+						const XY& xyExteriorHead = exteriorRing.points[0];
+						const XY& xyExteriorTail = exteriorRing.points[exteriorRing.points.size() - 1];
+
+						const XY& xyOtherHead = ringItem.points[0];
+						const XY& xyOtherTail = ringItem.points[ringItem.points.size() - 1];
+
+						//顺时针
+
+						if (xyExteriorHead.x == xyOtherTail.x&&xyExteriorHead.y == xyOtherTail.y)//外环的头与另一个环的尾相连
+						{
+							isTailInsert = true;
+							isForword = true;
+							return true;
+						}
+
+						if (xyExteriorTail.x == xyOtherHead.x&&xyExteriorTail.y == xyOtherHead.y)//外环的尾与另一个环的头相联
+						{
+							isTailInsert = true;
+							isForword = true;
+							return true;
+						}
+
+						//逆时针
+
+						if (xyExteriorHead.x == xyOtherHead.x&&xyExteriorHead.y == xyOtherHead.y)//外环的头与另一个环的头相连
+						{
+							isTailInsert = true;
+							isForword = false;
+							return true;
+						}
+
+						if (xyExteriorTail.x == xyOtherTail.x&&xyExteriorTail.y == xyOtherTail.y)//外环的尾与另一个环的尾相连
+						{
+							isTailInsert = true;
+							isForword = false;
+							return true;
+						}
+
+						return false;
+					}
+					return false;
+				});
+
+				if (itFindEdge != edgesClone.end())
+				{
+					int index = std::distance(edgesClone.begin(), itFindEdge);
+
+					int iInc = 0;
+					int iStart = 0;
+					int iEnd = 0;
+					if (isForword)
+					{
+						iInc = 1;
+						iStart = 0;
+						iEnd = itFindEdge->points.size() - 1;
+					}
+					else
+					{
+						iInc = -1;
+						iStart = itFindEdge->points.size() - 1;
+						iEnd = 0;
+					}
+
+
+
+
+					if (isTailInsert)
+					{
+						for (int i = iStart; i != (iEnd + iInc); i += iInc)
+						{
+							exteriorRing.points.push_back(itFindEdge->points[i]);
+						}
+					}
+					else
+					{
+						for (int i = iStart; i != (iEnd + iInc); i += iInc)
+						{
+							exteriorRing.points.insert(exteriorRing.points.begin(), itFindEdge->points[i]);
+						}
+					}
+
+					vectorRemoveAt<S57Ring2D>(edgesClone, index);
+
+					usedEdges.push_back(index);
+					bRet = true;
+				}
+				else
+				{
+					bRet = false;
+				}
+			}
+		}
+	}
+	return bRet;
 }

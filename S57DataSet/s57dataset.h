@@ -69,7 +69,9 @@ public://load used
 	std::vector<S57Feature*> mFeatures;
 	void iso8211ConvertToS57Buffer();//转换至 S57 ISO8211 Buffer
 	void s57BufferMerge(std::vector<S57DataSet>& dataSets);//S57 ISO8211 Buffer 合并更新数据集
-	void createS57Features();//生成最终的S57数据
+	void createS57Features();
+	void createEdges(S57Feature * feature, std::vector<S57Ring2D> &edges);
+	//生成最终的S57数据
 	std::map<ulong, S57Feature*> mS57FeaturesBuffer;
 	std::map<std::tuple<unsigned char, ulong>, S57Spatial*> mS57SpatialsBuffer;//RCNM/RCID/SPATIAL
 	void clear();
@@ -80,7 +82,7 @@ public://S57 Attributes
 public:
 	void setS57ObjectClasses(S57ObjectClasses* s57ObjectClasses);
 	void setS57Attributes(S57Attributes* s57Attributes);
-public://Text
+protected://下面是文本的处理
 	void setRecordSubfield(const DRRecord& drRecord, Subfield& subfield) override;
 	int charSize(const DDRField& ddrField) override;
 	int charSize(bool isNATF);
@@ -88,6 +90,10 @@ public://Text
 	std::string textValue(bool isNATF, const char* text, int textBytesLength);
 	int mNALL = -1;
 	int mAALL = -1;
+protected://通用函数
+	inline S57Spatial* getSpatial(unsigned char rcnm, ulong rcid);
+	inline bool getSG2DPoint(S57Spatial* spatial, double& x, double& y);
+	inline bool createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing);
 };
 
 #endif // S57SERIALIZE_H

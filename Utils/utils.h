@@ -59,6 +59,12 @@ void vectorConvert(const std::vector<T1>& vec1, std::vector<T2>& vec2)
 	}
 }
 
+template<class T>
+void vectorRemoveAt(std::vector<T>& vec, int iRemoveAt)
+{
+	vec.erase(vec.begin() + iRemoveAt, vec.begin() + iRemoveAt + 1);
+}
+
 
 class UTILSSHARED_EXPORT Utils
 {
@@ -152,6 +158,8 @@ public:
 	static int findNearPoint(double* points, int pointsCount, double x, double y, int doubleCount = 2);
 
 	inline static double div(double a, double b);
+
+
 };
 
 #endif // UTILS_H

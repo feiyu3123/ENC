@@ -677,22 +677,30 @@ void Utils::gravity(double* points, int pointsCount, double& x, double& y, int d
 	double px, py, sx, sy;
 	double tp, area = 0, tpx = 0, tpy = 0;
 	px = points[0]; py = points[1];
-	for (int i = 1; i <= pointsCount; i++)
+	if (pointsCount == 1)
 	{
-		int iPoint = (i == pointsCount) ? 0 : i;
-		sx = points[iPoint * doubleCount];
-		sy = points[iPoint * doubleCount + 1];
-		tp = px * sy - sx * py;
-		area += tp / 2.0;
-		tpx += (px + sx) * tp;
-		tpy += (py + sy) * tp;
-		px = sx;
-		py = sy;
+		x = points[0];
+		y = points[1];
 	}
-	sx = tpx / (6 * area);
-	sy = tpy / (6 * area);
-	x = sx;
-	y = sy;
+	else
+	{
+		for (int i = 1; i <= pointsCount; i++)
+		{
+			int iPoint = (i == pointsCount) ? 0 : i;
+			sx = points[iPoint * doubleCount];
+			sy = points[iPoint * doubleCount + 1];
+			tp = px * sy - sx * py;
+			area += tp / 2.0;
+			tpx += (px + sx) * tp;
+			tpy += (py + sy) * tp;
+			px = sx;
+			py = sy;
+		}
+		sx = tpx / (6 * area);
+		sy = tpy / (6 * area);
+		x = sx;
+		y = sy;
+	}
 }
 
 //求面积

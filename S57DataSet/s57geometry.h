@@ -20,6 +20,8 @@ struct S57DATASET_EXPORT XY
 
 };
 
+bool S57DATASET_EXPORT operator==(const XY& a, const XY& b);
+
 struct S57DATASET_EXPORT XYZ
 {
 	double x;

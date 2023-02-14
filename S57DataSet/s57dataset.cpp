@@ -245,7 +245,7 @@ void S57DataSet::createS57Features()
 	{
 		S57Feature* feature = itFeature->second;
 		S57Geometry* geometry = nullptr;
-		if (feature->mFRID.RCID == 1758)
+		if (feature->mFRID.RCID == 490)
 		{
 			bool debug = true;
 		}
@@ -308,7 +308,8 @@ void S57DataSet::createS57Features()
 			}
 
 			S57Ring2D lineBuffer;
-			createExteriorRing(edges, lineBuffer);
+			std::vector<S57Ring2D> innerRings;
+			createRings(edges, lineBuffer, innerRings);
 			if (lineBuffer.points.size() > 0)
 			{
 				line->points = lineBuffer.points;
@@ -337,12 +338,12 @@ void S57DataSet::createS57Features()
 			}
 
 			S57Ring2D exteriorRing;
-			createExteriorRing(edges, exteriorRing);
+			std::vector<S57Ring2D> innerRings;
+			createRings(edges, exteriorRing, innerRings);
 			if (exteriorRing.points.size() > 0)
 			{
 				area->exteriorRings.push_back(exteriorRing);
-
-
+				area->interiorRings.insert(area->interiorRings.end(), innerRings.begin(), innerRings.end());
 			}
 			if (area->exteriorRings.size() == 0)
 			{
@@ -2852,8 +2853,49 @@ bool S57DataSet::getSG2DPoint(S57Spatial* spatial, double& x, double& y)
 	return bRet;
 }
 
+bool isConnectedEdge(const S57Ring2D& mainRing, const S57Ring2D& secondRing, bool& isTailInsert, bool& isForword)//相连的边
+{
+	const XY& xyExteriorHead = mainRing.points[0];
+	const XY& xyExteriorTail = mainRing.points[mainRing.points.size() - 1];
 
-bool S57DataSet::createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing)//创建外环
+	const XY& xyOtherHead = secondRing.points[0];
+	const XY& xyOtherTail = secondRing.points[secondRing.points.size() - 1];
+
+	//顺时针
+
+	if (xyExteriorHead.x == xyOtherTail.x&&xyExteriorHead.y == xyOtherTail.y)//外环的头与另一个环的尾相连
+	{
+		isTailInsert = true;
+		isForword = true;
+		return true;
+	}
+
+	if (xyExteriorTail.x == xyOtherHead.x&&xyExteriorTail.y == xyOtherHead.y)//外环的尾与另一个环的头相联
+	{
+		isTailInsert = true;
+		isForword = true;
+		return true;
+	}
+
+	//逆时针
+
+	if (xyExteriorHead.x == xyOtherHead.x&&xyExteriorHead.y == xyOtherHead.y)//外环的头与另一个环的头相连
+	{
+		isTailInsert = true;
+		isForword = false;
+		return true;
+	}
+
+	if (xyExteriorTail.x == xyOtherTail.x&&xyExteriorTail.y == xyOtherTail.y)//外环的尾与另一个环的尾相连
+	{
+		isTailInsert = true;
+		isForword = false;
+		return true;
+	}
+	return false;
+}
+
+bool S57DataSet::createRings(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing, std::vector<S57Ring2D>& innerRings)//创建外环
 {
 	bool bRet = false;
 	if (edges.size() == 1)
@@ -2867,7 +2909,7 @@ bool S57DataSet::createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring
 		std::vector<int> usedEdges;
 		std::vector<S57Ring2D> edgesClone = edges;
 		int iEdgeCount = edges.size();
-		for (int i = usedEdges.size(); i < iEdgeCount; i++)
+		for (int iUsedEdge = usedEdges.size(); iUsedEdge < iEdgeCount; iUsedEdge++)
 		{
 			if (usedEdges.size() == 0)
 			{
@@ -2883,45 +2925,8 @@ bool S57DataSet::createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring
 				auto itFindEdge = std::find_if(edgesClone.begin(), edgesClone.end(), [&](const S57Ring2D& ringItem)->bool {
 					if (ringItem.points.size() > 0 && exteriorRing.points.size() > 0)
 					{
-						const XY& xyExteriorHead = exteriorRing.points[0];
-						const XY& xyExteriorTail = exteriorRing.points[exteriorRing.points.size() - 1];
-
-						const XY& xyOtherHead = ringItem.points[0];
-						const XY& xyOtherTail = ringItem.points[ringItem.points.size() - 1];
-
-						//顺时针
-
-						if (xyExteriorHead.x == xyOtherTail.x&&xyExteriorHead.y == xyOtherTail.y)//外环的头与另一个环的尾相连
-						{
-							isTailInsert = true;
-							isForword = true;
-							return true;
-						}
-
-						if (xyExteriorTail.x == xyOtherHead.x&&xyExteriorTail.y == xyOtherHead.y)//外环的尾与另一个环的头相联
-						{
-							isTailInsert = true;
-							isForword = true;
-							return true;
-						}
-
-						//逆时针
-
-						if (xyExteriorHead.x == xyOtherHead.x&&xyExteriorHead.y == xyOtherHead.y)//外环的头与另一个环的头相连
-						{
-							isTailInsert = true;
-							isForword = false;
-							return true;
-						}
-
-						if (xyExteriorTail.x == xyOtherTail.x&&xyExteriorTail.y == xyOtherTail.y)//外环的尾与另一个环的尾相连
-						{
-							isTailInsert = true;
-							isForword = false;
-							return true;
-						}
-
-						return false;
+						bool bRet = isConnectedEdge(exteriorRing, ringItem, isTailInsert, isForword);
+						return bRet;
 					}
 					return false;
 				});
@@ -2971,7 +2976,22 @@ bool S57DataSet::createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring
 				}
 				else
 				{
-					bRet = false;
+					//判断内环
+					for (int i = 0; i < edgesClone.size(); i++)
+					{
+						S57Ring2D& ring = edgesClone[i];
+						if (ring.points.size() > 0)
+						{
+							bool isClosedRing = ring.points[0] == ring.points[ring.points.size() - 1];//闭环
+							if (isClosedRing)
+							{
+								innerRings.push_back(ring);
+								bRet = true;
+							}
+						}
+					}
+
+					//bRet = false;
 				}
 			}
 		}

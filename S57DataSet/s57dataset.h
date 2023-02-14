@@ -93,7 +93,7 @@ protected://下面是文本的处理
 protected://通用函数
 	inline S57Spatial* getSpatial(unsigned char rcnm, ulong rcid);
 	inline bool getSG2DPoint(S57Spatial* spatial, double& x, double& y);
-	inline bool createExteriorRing(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing);
+	inline bool createRings(const std::vector<S57Ring2D>& edges, S57Ring2D& exteriorRing, std::vector<S57Ring2D>& innerRings);
 };
 
 #endif // S57SERIALIZE_H

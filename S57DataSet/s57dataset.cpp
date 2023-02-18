@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QIODevice>
 
+int DEBUG_ID = 0;
+
 bool loadS57ExtRes(const std::string& path, std::vector<S57ExtRes>& s57ExtRess, int iLen)
 {
 	bool bRet = false;
@@ -239,13 +241,15 @@ void S57DataSet::s57BufferMerge(std::vector<S57DataSet>& dataSets)
 }
 
 
+
+
 void S57DataSet::createS57Features()
 {
 	for (auto itFeature = mS57FeaturesBuffer.begin(); itFeature != mS57FeaturesBuffer.end(); itFeature++)
 	{
 		S57Feature* feature = itFeature->second;
 		S57Geometry* geometry = nullptr;
-		if (feature->mFRID.RCID == 490)
+		if (feature->mFRID.RCID == DEBUG_ID)
 		{
 			bool debug = true;
 		}
